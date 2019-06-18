@@ -1,7 +1,7 @@
 #' Make scale
 #'
 #' @export
-makeScale <- function(limits, range = c(2, 10), breaks = NULL) {
+make_scale <- function(limits, range = c(2, 10), breaks = NULL) {
   if (is.null(breaks)) {
     if (limits[2] < 5) {
       breaks <- seq(min(limits), max(limits))
@@ -18,7 +18,7 @@ makeScale <- function(limits, range = c(2, 10), breaks = NULL) {
 #' Make a map
 #'
 #' @export
-makeMap <- function(data, type = "events", area = NULL, color = "red", scale = NULL, lineColor = "white", lineWidth = 0.8, faceted = FALSE) {
+make_map <- function(data, type = "events", area = NULL, color = "red", scale = NULL, line_color = "white", line_width = 0.8, faceted = FALSE) {
 
   world <- borders("world", colour = "gray80", fill = "gray80", size = 0)
 
@@ -41,7 +41,7 @@ makeMap <- function(data, type = "events", area = NULL, color = "red", scale = N
 
   if (is.null(scale)) {
     limits <- range(stats[,type])
-    scale <- makeScale(limits)
+    scale <- make_scale(limits)
   }
     
   p <- ggplot() +
@@ -49,11 +49,11 @@ makeMap <- function(data, type = "events", area = NULL, color = "red", scale = N
     geom_point(
       data = stats %>% arrange_(.dots = paste0("desc(", type, ")")),
       aes_string(x = "longitude", y = "latitude", size = type),
-      stroke = lineWidth,
+      stroke = line_width,
       alpha = 1,
       shape = 21,
       fill = color,
-      colour = lineColor
+      colour = line_color
     ) +
     xlab("longitude") +
     ylab("latitude") +

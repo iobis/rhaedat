@@ -20,13 +20,13 @@ stats <- df %>%
 range(stats$years)
 years_scale <- scale_radius(limits = c(1, 35), range = c(1.5, 8), breaks = c(1, 10, 20, 30))
 
-for (lineColor in line_colors) {
+for (line_color in line_colors) {
   for (syn in list_syndromes) {
     for (area in list_areas) {
       df2 <- df %>% filter(syndromeName == syn$name)
-      path <- paste0("demo/output/years_", area$name, "_", syn$name, "_", lineColor, ".png")
+      path <- paste0("demo/output/years_", area$name, "_", syn$name, "_", line_color, ".png")
       message(path)
-      makeMap(df2, area = area, type = "years", scale = years_scale, lineColor = lineColor, lineWidth = 0.75, color = "#ff704d")
+      make_map(df2, area = area, type = "years", scale = years_scale, line_color = line_color, line_width = 0.75, color = "#ff704d")
       ggsave(path, height = 8, width = 12, scale = 0.8)
     }    
   }
@@ -36,13 +36,13 @@ for (lineColor in line_colors) {
 
 years_scale2 <- scale_radius(limits = c(1, 5), range = c(1.5, 4))
 
-for (lineColor in line_colors) {
+for (line_color in line_colors) {
   for (syn in list_syndromes) {
     for (area in list_areas) {
       df2 <- df %>% filter(syndromeName == syn$name)
-      path <- paste0("demo/output/years_5years_", area$name, "_", syn$name, "_", lineColor, ".png")
+      path <- paste0("demo/output/years_5years_", area$name, "_", syn$name, "_", line_color, ".png")
       message(path)
-      makeMap(df2, area = area, type = "years", lineColor = lineColor, lineWidth = 0.65, color = "#ff704d", faceted = TRUE, scale = years_scale2)#, scale = years_scale2
+      make_map(df2, area = area, type = "years", line_color = line_color, line_width = 0.65, color = "#ff704d", faceted = TRUE, scale = years_scale2)#, scale = years_scale2
       ggsave(path, height = 8, width = 12, scale = 0.8)
     }    
   }
