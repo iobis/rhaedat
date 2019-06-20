@@ -1,3 +1,8 @@
+fix_syndromes <- function(data) {
+  data$syndromeName <- replace(data$syndromeName, data$syndromeName %in% c("CFP (Ciguatera Fish Poisoning)", "CSP (Ciguatera Shellfish Poisoning)"), "Ciguatera")
+  return(data)
+}
+
 #' Fetch events
 #'
 #' @export
@@ -34,6 +39,7 @@ events <- function() {
       return(NA)
     }
   })
+  df <- fix_syndromes(df)
   return(df)
 }
 

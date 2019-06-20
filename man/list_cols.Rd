@@ -4,7 +4,7 @@
 \name{list_cols}
 \alias{list_cols}
 \title{Color list}
-\format{An object of class \code{character} of length 12.}
+\format{An object of class \code{character} of length 9.}
 \usage{
 list_cols
 }

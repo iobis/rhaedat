@@ -4,7 +4,7 @@
 \name{list_syndromes}
 \alias{list_syndromes}
 \title{Syndromes list}
-\format{An object of class \code{list} of length 10.}
+\format{An object of class \code{list} of length 9.}
 \usage{
 list_syndromes
 }
