@@ -16,7 +16,8 @@ Imports:
     jsonlite,
     leaflet,
     ggplot2,
-    stringr
+    stringr,
+    maps
 License: MIT + file LICENSE
 Suggests:
     testthat

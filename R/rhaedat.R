@@ -4,6 +4,6 @@
 #'
 #' @docType package
 #' @name rhaedat
-#' @import dplyr httr jsonlite leaflet ggplot2 stringr
+#' @import dplyr httr jsonlite leaflet ggplot2 stringr maps
 NULL
 
