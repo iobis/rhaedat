@@ -23,7 +23,7 @@ events <- function() {
       foamMucil = as.logical(as.numeric(foamMucil)),
       aquacultureFishAffected = as.logical(as.numeric(aquacultureFishAffected))
     ) %>%
-    filter(longitude >= -180 & longitude <= 180 & latitude >= -90 & latitude <= 90)
+    filter((is.na(longitude) & is.na(latitude)) | longitude >= -180 & longitude <= 180 & latitude >= -90 & latitude <= 90)
   df$period <- sapply(df$eventYear, function(x) {
     if (is.na(x)) {
       return(NA)
