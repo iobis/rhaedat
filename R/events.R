@@ -23,7 +23,8 @@ events <- function() {
       foamMucil = as.logical(as.numeric(foamMucil)),
       aquacultureFishAffected = as.logical(as.numeric(aquacultureFishAffected))
     ) %>%
-    filter((is.na(longitude) & is.na(latitude)) | longitude >= -180 & longitude <= 180 & latitude >= -90 & latitude <= 90)
+    filter((is.na(longitude) & is.na(latitude)) | longitude >= -180 & longitude <= 180 & latitude >= -90 & latitude <= 90) %>%
+    arrange(gridCode, eventName)
   df$period <- sapply(df$eventYear, function(x) {
     if (is.na(x)) {
       return(NA)
@@ -49,7 +50,7 @@ events <- function() {
 events_ices <- function() {
   df <- events()
   ices <- df %>% 
-    filter((str_detect(regionName, "^ICES") | str_detect(regionName, "NEP")) & !is.na(syndromeName))
+    filter((str_detect(regionName, "^ICES") | str_detect(regionName, "NEP")))
   return(ices)
 }
 
