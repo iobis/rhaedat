@@ -72,7 +72,7 @@ make_map <- function(data, type = "events", area = NULL, color = "red", scale = 
     scale
   
   if (faceted) {
-    p <- p + facet_wrap(period ~ ., ncol = 2)
+    p <- p + facet_wrap(period ~ ., ncol = 2, drop = FALSE)
   }
   
   return(p)

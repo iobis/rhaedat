@@ -40,6 +40,7 @@ events <- function() {
       return(NA)
     }
   })
+  df$period <- factor(df$period, levels = list_periods)
   df <- fix_syndromes(df)
   return(df)
 }
@@ -47,11 +48,15 @@ events <- function() {
 #' Fetch ICES region events
 #'
 #' @export
-events_ices <- function() {
+events_ices <- function(atlantic = FALSE) {
   df <- events()
   ices <- df %>% 
     filter((str_detect(regionName, "^ICES") | str_detect(regionName, "NEP")))
-  return(ices)
+  if (atlantic) {
+    return(ices %>% filter(!str_detect(regionName, "NEP")))
+  } else {
+    return(ices)
+  }
 }
 
 #' Fetch UK events

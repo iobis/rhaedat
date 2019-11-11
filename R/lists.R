@@ -32,3 +32,7 @@ list_areas <- list(
   list(name = "allareas", xlim = c(-175, 40), ylim = c(10, 90))
 )
 
+#' Period list
+#'
+#' @export
+list_periods <- c("1998 - 2002", "2003 - 2007", "2008 - 2012", "2013 - 2017")

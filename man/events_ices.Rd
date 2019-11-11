@@ -4,7 +4,7 @@
 \alias{events_ices}
 \title{Fetch ICES region events}
 \usage{
-events_ices()
+events_ices(atlantic = FALSE)
 }
 \description{
 Fetch ICES region events
