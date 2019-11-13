@@ -24,12 +24,12 @@ make_map <- function(data, type = "events", area = NULL, color = "red", scale = 
 
   if (faceted) {
     stats <- data %>% 
-      group_by(period, syndromeName, longitude, latitude) %>%
+      group_by(period, longitude, latitude) %>%
       summarize(events = length(unique(eventName)), years = length(unique(eventYear))) %>%
       filter(!is.na(period))
   } else {
     stats <- data %>% 
-      group_by(syndromeName, longitude, latitude) %>%
+      group_by(longitude, latitude) %>%
       summarize(events = length(unique(eventName)), years = length(unique(eventYear)))
   }
 

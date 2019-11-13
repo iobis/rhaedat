@@ -10,7 +10,9 @@ list_areas <- list(
   list(name = "us", xlim = c(-180, -35), ylim = c(15, 85))
 )
 
-df <- events_ices() %>% filter(!is.na(syndromeName))
+df <- events_ices() %>%
+  filter(!is.na(syndromeName)) %>%
+  filter(countryName == "UNITED STATES")
 
 # full maps
 
