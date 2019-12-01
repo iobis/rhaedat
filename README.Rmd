@@ -1,0 +1,28 @@
+---
+title: "README"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rhaedat)
+```
+
+## rhaedat
+
+### Example code
+
+A number of code examples can be found in the [demo](/demo) folder.
+
+### Fetching data
+
+This package includes the `events()` function which fetches all event data from HAEDAT:
+
+```{r}
+df <- events()
+head(df)
+```
+
+Note that there may be multiple rows per event, for example when an event spans multiple grids or when multiple causative species are involved. This needs to be taken into account when analyzing event data.
