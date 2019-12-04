@@ -2,15 +2,15 @@
 #'
 #' @export
 list_syndromes <- list(
-  list(name = "Aerosolized toxins effects"),
-  list(name = "ASP"),
-  list(name = "AZP"),
-  list(name = "Ciguatera"),
-  list(name = "Cyanobacterial toxins effects"),
-  list(name = "DSP"),
-  list(name = "NSP"),
-  list(name = "PSP"),
-  list(name = "OTHER")
+  list(name = "Aerosolized toxins effects", color = "#c02d1d"),
+  list(name = "ASP", color = "#f26c21"),
+  list(name = "AZP", color = "#edaa38"),
+  list(name = "Ciguatera", color = "#ebc843"),
+  list(name = "Cyanobacterial toxins effects", color = "#a2b86c"),
+  list(name = "DSP", color = "#1995bb"),
+  list(name = "NSP", color = "#177799"),
+  list(name = "PSP", color = "#b296e4"),
+  list(name = "OTHER", color = "#cccccc")
 )
 
 #' Color list

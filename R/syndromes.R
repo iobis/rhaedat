@@ -8,3 +8,14 @@ syndromes <- function() {
   df <- fromJSON(text, simplifyVector = TRUE)
   return(df)
 }
+
+#' Translate syndrome name to toxin
+#'
+#' @export
+to_toxin <- function(syndrome) {
+  if (syndrome == "PSP") return("PST")
+  else if (syndrome == "ASP") return("AST")
+  else if (syndrome == "DSP") return("DST")
+  else if (syndrome == "AZP") return("AZA")
+  else return(syndrome)  
+}

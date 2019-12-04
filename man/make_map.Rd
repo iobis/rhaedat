@@ -6,7 +6,7 @@
 \usage{
 make_map(data, type = "events", area = NULL, color = "red",
   scale = NULL, line_color = "white", line_width = 0.8,
-  faceted = FALSE)
+  faceted = FALSE, world = NULL)
 }
 \description{
 Make a map

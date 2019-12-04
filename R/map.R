@@ -18,9 +18,11 @@ make_scale <- function(limits, range = c(2, 10), breaks = NULL) {
 #' Make a map
 #'
 #' @export
-make_map <- function(data, type = "events", area = NULL, color = "red", scale = NULL, line_color = "white", line_width = 0.8, faceted = FALSE) {
+make_map <- function(data, type = "events", area = NULL, color = "red", scale = NULL, line_color = "white", line_width = 0.8, faceted = FALSE, world = NULL) {
 
-  world <- borders("world", colour = "gray80", fill = "gray80", size = 0)
+  if (is.null(world)) {
+    world <- borders("world", colour = "gray80", fill = "gray80", size = 0)
+  }
 
   if (faceted) {
     stats <- data %>% 
