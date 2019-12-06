@@ -5,3 +5,5 @@
 ..Rcheck
 CRAN-RELEASE
 demo/output/
+demo/temp/
+

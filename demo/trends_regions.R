@@ -19,6 +19,23 @@ colors <- c(
   "#b7d5a6"
   #"#f3c3db"
 )
+
+regions_all <- c(
+  "Region 1 (ECA)",
+  "Region 2 (CCA)",
+  "Region 3 (SAM)",
+  "Region 4 (WCA)",
+  "Region 5 (ANZ)",
+  "Region 6 (SEA)",
+  "Region 7 (NAS)",
+  "Region 8 (Indian Ocean)",
+  "Region 9 (Benguela)",
+  "Region 10 (West Africa)",
+  "Region 11 (MED)",
+  "Region 12 (EUR)",
+  "Region 13 (PAC)"
+)
+
 regions <- c(
   "Region 1 (ECA)",
   "Region 2 (CCA)",
@@ -47,10 +64,10 @@ stats <- df %>%
   summarize(events = length(unique(eventName))) %>%
   select(year = eventYear, region = regionName, events)
   
-ggplot() +
-  geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
-  scale_fill_manual(values = colors) +
-  scale_x_continuous(breaks = pretty_breaks(n = 10))
+#ggplot() +
+#  geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
+#  scale_fill_manual(values = colors) +
+#  scale_x_continuous(breaks = pretty_breaks(n = 10))
 #ggsave("demo/output/region_events.png", height = 7, width = 10)
 
 ggplot() +
@@ -60,5 +77,35 @@ ggplot() +
   theme(strip.background = element_blank(), strip.text.y = element_blank()) +
   scale_y_continuous(breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1), n = 3)))) +
   scale_x_continuous(breaks = pretty_breaks(n = 10))
+
 ggsave("demo/output/region_events_split.png", height = 13, width = 7, scale = 0.8)
 
+# combined with sampling effort (see sampling_effort.R as well)
+
+effort <- read.csv("demo/temp/effort.csv", stringsAsFactors = FALSE) %>%
+  mutate(region = regions_all[hab_region]) %>%
+  filter(date_year >= 1985)
+
+max_events <- stats %>% group_by(region) %>% summarize(max_events = max(events))
+max_effort <- effort %>% group_by(region) %>% summarize(max_effort = max(effort))
+
+effort <- effort %>%
+  filter(date_year >= 1985) %>%
+  mutate(region = regions_all[hab_region]) %>%
+  filter(region %in% regions) %>%
+  left_join(max_events, by = c("region")) %>%
+  left_join(max_effort, by = c("region")) %>%
+  mutate(effort = effort / max_effort * max_events) %>%
+  mutate(region = factor(region, levels = regions))
+  
+ggplot() +
+  geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
+  scale_fill_manual(values = colors) +
+  geom_line(data = effort, aes(x = date_year, y = effort, color = "effort")) +
+  facet_grid(vars(region), scales = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_blank()) +
+  scale_y_continuous(breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1), n = 3)))) +
+  scale_x_continuous(breaks = pretty_breaks(n = 10)) +
+  scale_color_manual(name = "sampling effort", values = c(effort = "#000000"), labels = NULL)
+
+ggsave("demo/output/region_events_effort.png", height = 13, width = 7, scale = 0.8)
