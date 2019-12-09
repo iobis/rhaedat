@@ -3,10 +3,18 @@ library(ggplot2)
 library(dplyr)
 library(stringr)
 library(mapdata)
+library(ggmap)
+
+bubble_size <- 3
+fig_scale <- 0.6
+fig_xlim <- c(-10, 36.5)
+fig_ylim <- c(30, 46)
+
+# background
 
 world <- map_data("worldHires", xlim = c(-30, 50), ylim = c(10, 60))
 df <- occurrence(datasetid = "9e2005b5-0e20-4701-bbdb-bd441bd65ea3")
-coord_med <- coord_quickmap(xlim = c(-10, 36.5), ylim = c(30, 46))
+coord_med <- coord_quickmap(xlim = fig_xlim, ylim = fig_ylim)
 theme_med <- theme(
     panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
     panel.background = element_rect(fill = "#fafafa"),
@@ -28,12 +36,12 @@ table(df_dsp$species)
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_dsp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_dsp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
   ggtitle("DSP")
-ggsave("demo/output/map_med_1_dsp.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_1_dsp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 2: PSP
 
@@ -50,12 +58,12 @@ table(df_psp$genus)
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_psp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_psp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
   ggtitle("PSP")
-ggsave("demo/output/map_med_2_psp.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_2_psp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 3: ASP
 
@@ -74,12 +82,12 @@ df_asp %>% select(genus, species, identificationVerificationStatus)
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_asp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_asp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
   ggtitle("ASP")
-ggsave("demo/output/map_med_3_asp.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_3_asp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 4: possible ASP
 
@@ -98,12 +106,12 @@ df_asp2 %>% select(genus, species, identificationVerificationStatus)
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_asp2, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_asp2, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
   ggtitle("Possible ASP")
-ggsave("demo/output/map_med_4_possibleasp.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_4_possibleasp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 5: Ostreopsis and ciguatera species
 
@@ -119,12 +127,12 @@ table(df_ost$genus)
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_ost, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_ost, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
   scale_fill_manual(values = c("#56b4e9", "#ffa808", "#bf3939")) +
   coord_med +
   theme_med +
   ggtitle("Ostreopsis and ciguatera")
-ggsave("demo/output/map_med_5_ostreopsis.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_5_ostreopsis.png", width = 12, height = 7, scale = fig_scale)
 
 # map 6: other toxicity
 
@@ -141,11 +149,11 @@ taxa[which(!(taxa %in% df_other$scientificName))]
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_other, aes(decimalLongitude, decimalLatitude), fill = "#bf3939", shape = 21, colour = "#ffffff", size = 2.5) +
+  geom_point(data = df_other, aes(decimalLongitude, decimalLatitude), fill = "#bf3939", shape = 21, colour = "#ffffff", size = bubble_size) +
   coord_med +
   theme_med +
   ggtitle("Other toxicity")
-ggsave("demo/output/map_med_6_other.png", width = 12, height = 7, scale = 1)
+ggsave("demo/output/map_med_6_other.png", width = 12, height = 7, scale = fig_scale)
 
 
 

@@ -3,6 +3,7 @@ library(ggplot2)
 library(dplyr)
 library(dggridR)
 library(viridis)
+library(ggmap)
 
 al <- occurrence("Alexandrium") %>% mutate(taxon = "Alexandrium")
 gy <- occurrence("Gymnodinium catenatum") %>% mutate(taxon = "Gymnodinium catenatum")
@@ -10,7 +11,7 @@ py <- occurrence("Pyrodinium") %>% mutate(taxon = "Pyrodinium")
 
 world <- map_data("world")
 
-colors <- c("#bf3939", "#6bb02a", "#ffa808")
+colors <- c("#bf3939", "#56b4e9", "#ffa808")
 occ <- bind_rows(al, gy, py)
 
 global <- ggplot() +

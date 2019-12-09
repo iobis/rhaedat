@@ -64,12 +64,6 @@ stats <- df %>%
   summarize(events = length(unique(eventName))) %>%
   select(year = eventYear, region = regionName, events)
   
-#ggplot() +
-#  geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
-#  scale_fill_manual(values = colors) +
-#  scale_x_continuous(breaks = pretty_breaks(n = 10))
-#ggsave("demo/output/region_events.png", height = 7, width = 10)
-
 ggplot() +
   geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
   scale_fill_manual(values = colors) +
