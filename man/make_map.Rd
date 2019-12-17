@@ -4,9 +4,17 @@
 \alias{make_map}
 \title{Make a map}
 \usage{
-make_map(data, type = "events", area = NULL, color = "red",
-  scale = NULL, line_color = "white", line_width = 0.8,
-  faceted = FALSE, world = NULL)
+make_map(
+  data,
+  type = "events",
+  area = NULL,
+  color = "red",
+  scale = NULL,
+  line_color = "white",
+  line_width = 0.8,
+  faceted = FALSE,
+  world = NULL
+)
 }
 \description{
 Make a map

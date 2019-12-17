@@ -4,8 +4,14 @@
 \alias{barplot_country}
 \title{Events barplot by country}
 \usage{
-barplot_country(data, countries, type = "events", min_year = NULL,
-  max_year = NULL, na_omit = TRUE)
+barplot_country(
+  data,
+  countries,
+  type = "events",
+  min_year = NULL,
+  max_year = NULL,
+  na_omit = TRUE
+)
 }
 \description{
 Events barplot by country

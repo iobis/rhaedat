@@ -3,7 +3,6 @@
 \docType{package}
 \name{rhaedat}
 \alias{rhaedat}
-\alias{rhaedat-package}
 \title{rhaedat: R client for HAEDAT}
 \description{
 Work in progress

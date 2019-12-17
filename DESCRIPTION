@@ -17,9 +17,10 @@ Imports:
     leaflet,
     ggplot2,
     stringr,
-    maps
+    maps,
+    rnaturalearth
 License: MIT + file LICENSE
 Suggests:
     testthat
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

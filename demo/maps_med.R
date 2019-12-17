@@ -4,15 +4,21 @@ library(dplyr)
 library(stringr)
 library(mapdata)
 library(ggmap)
+library(rnaturalearth)
 
 bubble_size <- 3
 fig_scale <- 0.6
 fig_xlim <- c(-10, 36.5)
 fig_ylim <- c(30, 46)
+ann_size <- 1.8
+
+# ggmap
+#basemap <- get_stamenmap(bbox = c(fig_xlim[1], fig_ylim[1], fig_xlim[2], fig_ylim[2]), zoom = 5, maptype = "toner-lite", crop = FALSE)
+#plot(basemap)
 
 # background
 
-world <- map_data("worldHires", xlim = c(-30, 50), ylim = c(10, 60))
+world <- ne_countries(type = "countries", scale = "large")
 df <- occurrence(datasetid = "9e2005b5-0e20-4701-bbdb-bd441bd65ea3")
 coord_med <- coord_quickmap(xlim = fig_xlim, ylim = fig_ylim)
 theme_med <- theme(
@@ -21,6 +27,15 @@ theme_med <- theme(
     axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(),
     legend.position = "bottom", legend.title = element_blank()
   )
+ann <- bind_rows(
+  data.frame(x = 12, y = 39.5, label = "Tyrrhenian\nSea", angle = 0, size = ann_size),
+  data.frame(x = 16.3, y = 42.3, label = "Adriatic Sea", angle = -40, size = ann_size),
+  data.frame(x = 18, y = 36, label = "Ionian Sea", angle = 0, size = ann_size),
+  data.frame(x = 3.5, y = 40.6, label = "Balearic Sea", angle = 0, size = ann_size),
+  data.frame(x = 9, y = 43.5, label = "Ligurian\nSea", angle = 0, size = ann_size),
+  data.frame(x = 25.3, y = 38.5, label = "Aegean\nSea", angle = 0, size = ann_size)
+)
+ann_med <- annotate("text", x = ann$x, y = ann$y, label = ann$label, angle = ann$angle, size = ann_size)
 
 # map 1: DSP species
 
@@ -40,7 +55,9 @@ ggplot() +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
-  ggtitle("DSP")
+  ggtitle("DSP") +
+  ann_med
+
 ggsave("demo/output/map_med_1_dsp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 2: PSP
@@ -62,7 +79,9 @@ ggplot() +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
-  ggtitle("PSP")
+  ggtitle("PSP") +
+  ann_med
+
 ggsave("demo/output/map_med_2_psp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 3: ASP
@@ -70,10 +89,11 @@ ggsave("demo/output/map_med_2_psp.png", width = 12, height = 7, scale = fig_scal
 df_asp <- df %>%
   filter(
     (genus == "Pseudo-nitzschia" & !is.na(species) & identificationVerificationStatus %in% c("1 - good", "2 - probable")) |
-    (genus == "Halamphora") |
+    #(genus == "Halamphora") |
     (species == "Nitzschia bizertensis")
   ) %>%
-  mutate(group = ifelse(genus == "Pseudo-nitzschia", "Pseudo-nitzschia", "Nitzschia / Halamphora"))
+  #mutate(group = ifelse(genus == "Pseudo-nitzschia", "Pseudo-nitzschia", "Nitzschia / Halamphora"))
+  mutate(group = genus)
 
 df_asp <- df_asp %>%
   arrange(desc(group))
@@ -86,12 +106,18 @@ ggplot() +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
-  ggtitle("ASP")
+  ggtitle("ASP") +
+  ann_med
+
 ggsave("demo/output/map_med_3_asp.png", width = 12, height = 7, scale = fig_scale)
 
-# map 4: possible ASP
+# map 4: possible ASP, this uses all OBIS data!
 
-df_asp2 <- df %>%
+if (!exists("df_asp2_obis")) {
+  df_asp2_obis <- occurrence(c("Pseudo-nitzschia", "Halamphora", "Nitzschia bizertensis"), geom = "POLYGON((-18 53,49 53,49 22,-18 22,-18 53))")
+}
+
+df_asp2 <- df_asp2_obis %>%
   filter(
     (genus == "Pseudo-nitzschia") |
     (genus == "Halamphora") |
@@ -110,7 +136,9 @@ ggplot() +
   scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
   coord_med +
   theme_med +
-  ggtitle("Possible ASP")
+  ggtitle("Possible ASP") +
+  ann_med
+
 ggsave("demo/output/map_med_4_possibleasp.png", width = 12, height = 7, scale = fig_scale)
 
 # map 5: Ostreopsis and ciguatera species
@@ -131,7 +159,9 @@ ggplot() +
   scale_fill_manual(values = c("#56b4e9", "#ffa808", "#bf3939")) +
   coord_med +
   theme_med +
-  ggtitle("Ostreopsis and ciguatera")
+  ggtitle("Ostreopsis and ciguatera") +
+  ann_med
+
 ggsave("demo/output/map_med_5_ostreopsis.png", width = 12, height = 7, scale = fig_scale)
 
 # map 6: other toxicity
@@ -152,7 +182,9 @@ ggplot() +
   geom_point(data = df_other, aes(decimalLongitude, decimalLatitude), fill = "#bf3939", shape = 21, colour = "#ffffff", size = bubble_size) +
   coord_med +
   theme_med +
-  ggtitle("Other toxicity")
+  ggtitle("Other toxicity") +
+  ann_med
+
 ggsave("demo/output/map_med_6_other.png", width = 12, height = 7, scale = fig_scale)
 
 

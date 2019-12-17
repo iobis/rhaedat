@@ -4,8 +4,14 @@
 \alias{barplot}
 \title{Events barplot}
 \usage{
-barplot(data, type = "events", min_year = NULL, max_year = NULL,
-  na_omit = TRUE, split = FALSE)
+barplot(
+  data,
+  type = "events",
+  min_year = NULL,
+  max_year = NULL,
+  na_omit = TRUE,
+  split = FALSE
+)
 }
 \description{
 Events barplot
