@@ -21,7 +21,14 @@ events <- function() {
       eventYear = as.numeric(eventYear),
       massMortal = as.logical(as.numeric(massMortal)),
       foamMucil = as.logical(as.numeric(foamMucil)),
-      aquacultureFishAffected = as.logical(as.numeric(aquacultureFishAffected))
+      aquacultureFishAffected = as.logical(as.numeric(aquacultureFishAffected)),
+      humansAffected = as.logical(as.numeric(humansAffected)),
+      fishAffected = as.logical(as.numeric(fishAffected)),
+      naturalFishAffected = as.logical(as.numeric(naturalFishAffected)),
+      planktonicAffected = as.logical(as.numeric(planktonicAffected)),
+      benthicAffected = as.logical(as.numeric(benthicAffected)),
+      birdsAffected = as.logical(as.numeric(birdsAffected)),
+      shellfishAffected = as.logical(as.numeric(shellfishAffected))
     ) %>%
     filter((is.na(longitude) & is.na(latitude)) | longitude >= -180 & longitude <= 180 & latitude >= -90 & latitude <= 90) %>%
     arrange(gridCode, eventName)
@@ -65,6 +72,6 @@ events_ices <- function(atlantic = FALSE) {
 events_uk <- function() {
   df <- events()
   uk <- df %>% 
-    filter((str_detect(countryName, "UNITED KINGDOM")) & !is.na(syndromeName))
+    filter((str_detect(countryName, "UNITED KINGDOM")))
   return(uk)
 }

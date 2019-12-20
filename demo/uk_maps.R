@@ -5,7 +5,7 @@ library(mapdata)
 library(rnaturalearth)
 
 area <- list(name = "uk", xlim = c(-13, 3), ylim = c(49, 62))
-list_syndromes2 <- list_syndromes[c(2, 3, 6)]
+list_syndromes2 <- list_syndromes[c(2, 3, 6, 8)]
 ev <- events_uk()
 
 world_data <- ne_countries(type = "countries", scale = "large")
@@ -33,6 +33,7 @@ make_maps <- function(start = 0, end = as.integer(format(Sys.Date(), "%Y"))) {
 make_maps()
 make_maps(1998, 2007)
 make_maps(2008, 2017)
+make_maps(2000, 2017)
 
 
 
