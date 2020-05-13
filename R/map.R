@@ -24,11 +24,16 @@ make_map <- function(data, type = "events", area = NULL, color = "red", scale = 
     world <- borders("world", colour = "gray80", fill = "gray80", size = 0)
   }
 
-  if (faceted) {
+  if (faceted == TRUE) {
     stats <- data %>% 
       group_by(period, longitude, latitude) %>%
       summarize(events = length(unique(eventName)), years = length(unique(eventYear))) %>%
       filter(!is.na(period))
+  } else if (faceted == "alternative") {
+    stats <- data %>% 
+      group_by(period_alt, longitude, latitude) %>%
+      summarize(events = length(unique(eventName)), years = length(unique(eventYear))) %>%
+      filter(!is.na(period_alt))
   } else {
     stats <- data %>% 
       group_by(longitude, latitude) %>%
@@ -73,8 +78,10 @@ make_map <- function(data, type = "events", area = NULL, color = "red", scale = 
     ) +
     scale
   
-  if (faceted) {
+  if (faceted == TRUE) {
     p <- p + facet_wrap(period ~ ., ncol = 2, drop = FALSE)
+  } else if (faceted == "alternative") {
+    p <- p + facet_wrap(period_alt ~ ., ncol = 2, drop = FALSE)
   }
   
   return(p)

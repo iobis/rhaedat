@@ -6,8 +6,8 @@ fix_syndromes <- function(data) {
 #' Fetch events
 #'
 #' @export
-events <- function() {
-  res <- GET("http://haedat.iode.org/api/events", user_agent("robis - https://github.com/iobis/rhaedat"))
+events <- function(latest_data = FALSE) {
+  res <- GET("http://haedat.iode.org/api/events.php", user_agent("robis - https://github.com/iobis/rhaedat"))
   stop_for_status(res)
   text <- content(res, "text", encoding = "UTF-8")
   df <- fromJSON(text, simplifyVector = TRUE)
@@ -21,6 +21,7 @@ events <- function() {
       eventYear = as.numeric(eventYear),
       massMortal = as.logical(as.numeric(massMortal)),
       foamMucil = as.logical(as.numeric(foamMucil)),
+      otherEffect = as.logical(as.numeric(otherEffect)),
       aquacultureFishAffected = as.logical(as.numeric(aquacultureFishAffected)),
       humansAffected = as.logical(as.numeric(humansAffected)),
       fishAffected = as.logical(as.numeric(fishAffected)),
@@ -43,12 +44,46 @@ events <- function() {
       return("2008 - 2012")
     } else if (x >= 2013 & x <= 2017) {
       return("2013 - 2017")
+    } else if (latest_data & x >= 2018) {
+      return("2018 -")
     } else {
       return(NA)
     }
   })
-  df$period <- factor(df$period, levels = list_periods)
-  df <- fix_syndromes(df)
+  df$period_alt <- sapply(df$eventYear, function(x) {
+    if (is.na(x)) {
+      return(NA)
+    } else if (x >= 2000 & x <= 2004) {
+      return("2000 - 2004")
+    } else if (x >= 2005 & x <= 2009) {
+      return("2005 - 2009")
+    } else if (x >= 2010 & x <= 2014) {
+      return("2010 - 2014")
+    } else if (x >= 2015 & x <= 2019) {
+      return("2015 - 2019")
+    } else {
+      return(NA)
+    }
+  })
+  df$period_alt2 <- sapply(df$eventYear, function(x) {
+    if (is.na(x)) {
+      return(NA)
+    } else if (x >= 1990 & x <= 2019) {
+      return("1990 - 2019")
+    } else {
+      return(NA)
+    }
+  })
+  if (latest_data) {
+    period_levels <- list_periods_latest
+  } else {
+    period_levels <- list_periods
+  }
+  df$period <- factor(df$period, levels = period_levels)
+  df$period_alt <- factor(df$period_alt, levels = list_periods_alt)
+  df$period_alt2 <- factor(df$period_alt2, levels = list_periods_alt2)
+  df <- fix_syndromes(df) %>%
+    filter(!(eventName %in% c("US-17-025", "US-16-031", "US-98-001"))) # Dave Kulis
   return(df)
 }
 

@@ -88,3 +88,39 @@ message(path)
 make_map(df2, area = area, type = "events", scale = events_scale, line_color = "black", line_width = 0.75, color = "#ff704d") +
   labs(title = "Events with mass mortalities or aquaculture fish affected", subtitle = syn)
 ggsave(path, height = 8, width = 12, scale = 0.8)
+
+# split map effects (todo)
+# (i) when mass mortalities has been ticked
+# (ii) when other has been ticked
+# (iii) when natural fish has been ticked
+# (iv) when aquaculture fish has been ticked.
+
+max((df %>% filter(massMortal) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
+max((df %>% filter(otherEffect) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
+max((df %>% filter(naturalFishAffected) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
+max((df %>% filter(aquacultureFishAffected) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
+events_scale <- scale_radius(limits = c(1, 25), range = c(1.5, 8), breaks = c(1, 5, 10, 20, 25))
+
+df <- events_ices() %>%
+  filter(longitude >= area$xlim[1] & longitude <= area$xlim[2] & latitude >= area$ylim[1] & latitude <= area$ylim[2])
+
+make_map(df %>% filter(massMortal), area = area, type = "years", scale = events_scale, line_color = "black", line_width = 0.75, color = "#ff704d") +
+  labs(title = "Events with mass mortalities")
+ggsave("demo/output/massmortal.png", height = 8, width = 12, scale = 0.8)
+
+make_map(df %>% filter(otherEffect), area = area, type = "years", scale = events_scale, line_color = "black", line_width = 0.75, color = "#ff704d") +
+  labs(title = "Events with other effects")
+ggsave("demo/output/othereffect.png", height = 8, width = 12, scale = 0.8)
+
+make_map(df %>% filter(naturalFishAffected), area = area, type = "years", scale = events_scale, line_color = "black", line_width = 0.75, color = "#ff704d") +
+  labs(title = "Events with natural fish affected")
+ggsave("demo/output/naturalfish.png", height = 8, width = 12, scale = 0.8)
+
+make_map(df %>% filter(aquacultureFishAffected), area = area, type = "years", scale = events_scale, line_color = "black", line_width = 0.75, color = "#ff704d") +
+  labs(title = "Events with aquaculture fish affected")
+ggsave("demo/output/aquaculturefish.png", height = 8, width = 12, scale = 0.8)
+
+
+
+
+

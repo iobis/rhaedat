@@ -103,3 +103,38 @@ ggplot() +
   scale_color_manual(name = "sampling effort", values = c(effort = "#000000"), labels = NULL)
 
 ggsave("demo/output/region_events_effort.png", height = 13, width = 7, scale = 0.8)
+
+# not rescaled
+
+fact <- 10
+
+effort <- read.csv("demo/temp/effort.csv", stringsAsFactors = FALSE) %>%
+  mutate(region = regions_all[hab_region]) %>%
+  filter(date_year >= 1985) %>%
+  mutate(region = regions_all[hab_region]) %>%
+  filter(region %in% regions) %>%
+  left_join(max_events, by = c("region")) %>%
+  left_join(max_effort, by = c("region")) %>%
+  #mutate(effort = effort / max_effort * max_events) %>%
+  mutate(effort_scaled = effort / fact) %>%
+  mutate(region = factor(region, levels = regions))
+
+bf <- function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1), n = 3)))
+
+ggplot() +
+  geom_bar(data = stats, aes(x = year, y = events, fill = region), stat = "identity", width = 0.8) +
+  scale_fill_manual(values = colors) +
+  geom_line(data = effort, aes(x = date_year, y = effort_scaled, color = "effort")) +
+  facet_grid(vars(region), scales = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_blank()) +
+  scale_y_continuous(breaks = bf, sec.axis = sec_axis(~.*fact, name = "sampling effort (cell months)", breaks = bf)) +
+  scale_x_continuous(breaks = pretty_breaks(n = 10)) +
+  scale_color_manual(name = "sampling effort", values = c(effort = "#000000"), labels = NULL)
+
+ggsave("demo/output/region_events_effort_yaxes.png", height = 13, width = 9, scale = 0.8)
+
+# data output
+
+openxlsx::write.xlsx(stats, file = "demo/output/events.xlsx")
+openxlsx::write.xlsx(effort %>% select(region, date_year, effort), file = "demo/output/effort.xlsx")
+

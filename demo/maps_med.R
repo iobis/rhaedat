@@ -3,18 +3,15 @@ library(ggplot2)
 library(dplyr)
 library(stringr)
 library(mapdata)
-library(ggmap)
 library(rnaturalearth)
+library(rhaedat)
+library(colorspace)
 
 bubble_size <- 3
 fig_scale <- 0.6
 fig_xlim <- c(-10, 36.5)
 fig_ylim <- c(30, 46)
 ann_size <- 1.8
-
-# ggmap
-#basemap <- get_stamenmap(bbox = c(fig_xlim[1], fig_ylim[1], fig_xlim[2], fig_ylim[2]), zoom = 5, maptype = "toner-lite", crop = FALSE)
-#plot(basemap)
 
 # background
 
@@ -40,8 +37,7 @@ ann_med <- annotate("text", x = ann$x, y = ann$y, label = ann$label, angle = ann
 # map 1: DSP species
 
 df_dsp <- df %>%
-  filter(genus %in% c("Dinophysis", "Phalacroma", "Prorocentrum")) %>%
-  filter(is.na(species) | species != "Prorocentrum cordatum") %>%
+  filter(genus %in% c("Dinophysis", "Phalacroma") | species %in% c("Prorocentrum lima", "Prorocentrum mexicanum")) %>%
   mutate(group = ifelse(genus %in% c("Dinophysis", "Phalacroma"), "Dinophysis / Phalacroma", "Prorocentrum"))
 
 df_dsp <- df_dsp %>%
@@ -52,7 +48,7 @@ table(df_dsp$species)
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
   geom_point(data = df_dsp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
-  scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
+  scale_fill_manual(values = c(darken("#1995bb", 0.2), lighten("#1995bb", 0.3))) +
   coord_med +
   theme_med +
   ggtitle("DSP") +

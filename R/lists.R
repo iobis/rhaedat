@@ -36,3 +36,14 @@ list_areas <- list(
 #'
 #' @export
 list_periods <- c("1998 - 2002", "2003 - 2007", "2008 - 2012", "2013 - 2017")
+
+#' Period list (alternative)
+#'
+#' @export
+list_periods_alt <- c("2000 - 2004", "2005 - 2009", "2010 - 2014", "2015 - 2019")
+list_periods_alt2 <- c("1990 - 2019")
+
+#' Period list (including latest data)
+#'
+#' @export
+list_periods_latest <- c("1998 - 2002", "2003 - 2007", "2008 - 2012", "2013 - 2017", "2018 -")
