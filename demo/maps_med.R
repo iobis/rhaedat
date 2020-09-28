@@ -60,7 +60,7 @@ ggsave("demo/output/map_med_1_dsp.png", width = 12, height = 7, scale = fig_scal
 
 df_psp <- df %>%
   filter(genus == "Alexandrium" | species == "Gymnodinium catenatum") %>%
-  filter(is.na(species) | species != "Alexandrium pseudogonyaulax") %>%
+  filter(is.na(species) | (species != "Alexandrium pseudogonyaulax" & species != "Alexandrium balechii")) %>%
   mutate(group = genus)
 
 df_psp <- df_psp %>%
@@ -72,7 +72,7 @@ table(df_psp$genus)
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
   geom_point(data = df_psp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
-  scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
+  scale_fill_manual(values = c(darken("#b296e4", 0.35), lighten("#b296e4", 0.1))) +
   coord_med +
   theme_med +
   ggtitle("PSP") +
@@ -85,10 +85,8 @@ ggsave("demo/output/map_med_2_psp.png", width = 12, height = 7, scale = fig_scal
 df_asp <- df %>%
   filter(
     (genus == "Pseudo-nitzschia" & !is.na(species) & identificationVerificationStatus %in% c("1 - good", "2 - probable")) |
-    #(genus == "Halamphora") |
     (species == "Nitzschia bizertensis")
   ) %>%
-  #mutate(group = ifelse(genus == "Pseudo-nitzschia", "Pseudo-nitzschia", "Nitzschia / Halamphora"))
   mutate(group = genus)
 
 df_asp <- df_asp %>%
@@ -99,7 +97,7 @@ df_asp %>% select(genus, species, identificationVerificationStatus)
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
   geom_point(data = df_asp, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
-  scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
+  scale_fill_manual(values = c(darken("#f26c21", 0.2), lighten("#f26c21", 0.2))) +
   coord_med +
   theme_med +
   ggtitle("ASP") +
@@ -107,37 +105,7 @@ ggplot() +
 
 ggsave("demo/output/map_med_3_asp.png", width = 12, height = 7, scale = fig_scale)
 
-# map 4: possible ASP, this uses all OBIS data!
-
-if (!exists("df_asp2_obis")) {
-  df_asp2_obis <- occurrence(c("Pseudo-nitzschia", "Halamphora", "Nitzschia bizertensis"), geom = "POLYGON((-18 53,49 53,49 22,-18 22,-18 53))")
-}
-
-df_asp2 <- df_asp2_obis %>%
-  filter(
-    (genus == "Pseudo-nitzschia") |
-    (genus == "Halamphora") |
-    (species == "Nitzschia bizertensis")
-  ) %>%
-  mutate(group = ifelse(genus == "Pseudo-nitzschia", "Pseudo-nitzschia", "Nitzschia / Halamphora"))
-
-df_asp2 <- df_asp2 %>%
-  arrange(desc(group))
-
-df_asp2 %>% select(genus, species, identificationVerificationStatus)
-
-ggplot() +
-  geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_asp2, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
-  scale_fill_manual(values = c("#bf3939", "#56b4e9", "#ffa808")) +
-  coord_med +
-  theme_med +
-  ggtitle("Possible ASP") +
-  ann_med
-
-ggsave("demo/output/map_med_4_possibleasp.png", width = 12, height = 7, scale = fig_scale)
-
-# map 5: Ostreopsis and ciguatera species
+# map 4: Ostreopsis and ciguatera species
 
 df_ost <- df %>%
   filter(genus %in% c("Ostreopsis", "Fukuyoa", "Gambierdiscus")) %>%
@@ -152,36 +120,59 @@ table(df_ost$genus)
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
   geom_point(data = df_ost, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
-  scale_fill_manual(values = c("#56b4e9", "#ffa808", "#bf3939")) +
+  scale_fill_manual(values = c(darken("#ebc843", 0.2), darken("#ebc843", 0), lighten("#c02d1d", 0))) +
   coord_med +
   theme_med +
   ggtitle("Ostreopsis and ciguatera") +
   ann_med
 
-ggsave("demo/output/map_med_5_ostreopsis.png", width = 12, height = 7, scale = fig_scale)
+ggsave("demo/output/map_med_4_ostreopsis.png", width = 12, height = 7, scale = fig_scale)
 
-# map 6: other toxicity
-
-taxa <- c("Alexandrium pseudogonyaulax", "Amphidinium", "Amphidinium carterae", "Amphidinium klebsii", "Azadinium", "Azadinium dexteroporum", "Azadinium poporum", "Chattonella", "Chattonella marina", "Chattonella marina var. antiqua", "Chattonella subsalsa", "Chrysochromulina leadbeateri", "Fibrocapsa japonica", "Gonyaulax spinifera", "Heterosigma akashiwo", "Karenia bicuneiformis", "Karenia brevis", "Karenia cristata", "Karenia mikimotoi", "Karenia papilionacea", "Karenia selliformis", "Karenia umbella", "Karlodinium", "Karlodinium armiger", "Karlodinium corsicum", "Karlodinium veneficum", "Lingulodinium polyedra", "Margalefidinium polykrikoides", "Pfiesteria piscicida", "Phaeocystis globosa", "Pheopolykrikos hartmannii", "Prorocentrum cordatum", "Protoceratium reticulatum", "Prymnesium calathiferum", "Prymnesium faveolatum", "Prymnesium parvum", "Prymnesium polylepis", "Pseudochattonella farcimen", "Pseudochattonella verruculosa", "Vicicitus globosus", "Vulcanodinium rugosum")
+# map 5: other toxicity
 
 df_other <- df %>%
-  filter(genus %in% taxa | species %in% taxa) %>%
-  mutate(group = genus)
+  filter(dynamicProperties %in% c("syndrome=Other toxicity", "syndrome=Ichthyotoxic")) %>%
+  mutate(group = str_replace(dynamicProperties, "syndrome=Other toxicity", "Other toxicity")) %>%
+  mutate(group = str_replace(group, "syndrome=Ichthyotoxic", "Ichthyotoxicity"))
+  
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
+  geom_point(data = df_other, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
+  scale_fill_manual(values = c(darken("#a2b86c", 0.3), lighten("#a2b86c", 0.05))) +
+  coord_med +
+  theme_med +
+  ggtitle("Ichthyotoxicity and other toxic events") +
+  ann_med
 
-paste0(unique(df_other$scientificName)[order(unique(df_other$scientificName))], collapse = ";")
+ggsave("demo/output/map_med_5_other.png", width = 12, height = 7, scale = fig_scale)
 
-df_other[which(!(df_other$scientificName %in% taxa)),]
-taxa[which(!(taxa %in% df_other$scientificName))]
+# map 6: possible ASP, this uses all OBIS data!
+
+if (!exists("df_asp2_obis")) {
+  df_asp2_obis <- occurrence(c("Pseudo-nitzschia", "Halamphora", "Nitzschia"), geom = "POLYGON((-18 53,49 53,49 22,-18 22,-18 53))")
+}
+
+df_asp2 <- df_asp2_obis %>%
+#  filter(
+#    (genus == "Pseudo-nitzschia") |
+#    (genus == "Halamphora") |
+#    (species == "Nitzschia bizertensis")
+#  ) %>%
+  mutate(group = ifelse(genus == "Pseudo-nitzschia", "Pseudo-nitzschia", "Nitzschia / Halamphora"))
+
+df_asp2 <- df_asp2 %>%
+  arrange(desc(group))
 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = "#eeeeee", colour = "#cccccc", size = 0.3) +
-  geom_point(data = df_other, aes(decimalLongitude, decimalLatitude), fill = "#bf3939", shape = 21, colour = "#ffffff", size = bubble_size) +
+  geom_point(data = df_asp2, aes(decimalLongitude, decimalLatitude, fill = group), shape = 21, colour = "#ffffff", size = bubble_size) +
+  scale_fill_manual(values = c(darken("#f26c21", 0.2), lighten("#f26c21", 0.2))) +
   coord_med +
   theme_med +
-  ggtitle("Other toxicity") +
+  ggtitle("Possible ASP") +
   ann_med
 
-ggsave("demo/output/map_med_6_other.png", width = 12, height = 7, scale = fig_scale)
+ggsave("demo/output/map_med_6_possibleasp.png", width = 12, height = 7, scale = fig_scale)
 
 
 

@@ -5,6 +5,8 @@ library(dplyr)
 merge_no_other <- TRUE
 
 area <- list(name = "atlantic", xlim = c(-110, 40), ylim = c(20, 75))
+area_europe <- list(name = "europe", xlim = c(-20, 42), ylim = c(35, 70))
+
 if (merge_no_other) {
   syndromes <- unique(na.omit(events_ices()$syndromeName))
 } else {
@@ -17,7 +19,7 @@ if (merge_no_other) {
   replacement <- "no syndrome"  
 }
 
-# massmortalities
+# mass mortalities
 
 df <- events_ices() %>%
   filter(longitude >= area$xlim[1] & longitude <= area$xlim[2] & latitude >= area$ylim[1] & latitude <= area$ylim[2]) %>%
@@ -43,7 +45,7 @@ for (syn in syndromes) {
   ggsave(path, height = 8, width = 12, scale = 0.8)
 }
 
-# aquacultureFishAffected
+# aquaculture fish affected
 
 df <- events_ices() %>%
   filter(longitude >= area$xlim[1] & longitude <= area$xlim[2] & latitude >= area$ylim[1] & latitude <= area$ylim[2]) %>%
@@ -53,12 +55,6 @@ df <- events_ices() %>%
 stats <- df %>% 
   group_by(syndromeName, longitude, latitude) %>%
   summarize(events = length(unique(eventName)), years = length(unique(eventYear)))
-#range(stats$events)
-#events_scale <- scale_radius(
-#  limits = c(1, max(stats$events)),
-#  range = c(1.5, 8),
-#  breaks = seq(1, max(stats$events), by = 2)
-#)
 
 for (syn in syndromes) {
   df2 <- df %>% filter(syndromeName == syn)
@@ -69,7 +65,7 @@ for (syn in syndromes) {
   ggsave(path, height = 8, width = 12, scale = 0.8)
 }
 
-# combined
+# mass mortalities, aquaculture fish affected
 
 df <- events_ices() %>%
   filter(longitude >= area$xlim[1] & longitude <= area$xlim[2] & latitude >= area$ylim[1] & latitude <= area$ylim[2]) %>%
@@ -89,11 +85,56 @@ make_map(df2, area = area, type = "events", scale = events_scale, line_color = "
   labs(title = "Events with mass mortalities or aquaculture fish affected", subtitle = syn)
 ggsave(path, height = 8, width = 12, scale = 0.8)
 
+# aqualculture and natural fish (! not looking at massmortal)
+# TODO: FIX
+
+df <- events_ices() %>%
+  filter(naturalFishAffected | aquacultureFishAffected)
+
+stats <- df %>% 
+  group_by(longitude, latitude) %>%
+  summarize(events = length(unique(eventName)), years = length(unique(eventYear)))
+range(stats$years)
+
+years_scale <- scale_radius(
+  limits = c(1, max(stats$years)),
+  range = c(1.5, 8),
+  breaks = c(1, seq(5, max(stats$events), by = 5))
+)
+
+df2 <- df %>% filter(eventYear <= 2017)
+make_map(df2, area = area, type = "years", scale = years_scale, line_color = "black", line_width = 0.75, color = "#cccccc") +
+  labs(title = "Events with natural or aquaculture fish affected (up to 2017)")
+path <- paste0("demo/output/aquaculturenaturalfishaffected_years_atlantic_-2017.png")
+ggsave(path, height = 8, width = 12, scale = 0.8)
+
+df2 <- df %>% filter(eventYear >= 1998 & eventYear <= 2017)
+make_map(df2, area = area, type = "years", scale = years_scale, line_color = "black", line_width = 0.75, color = "#cccccc") +
+  labs(title = "Events with natural or aquaculture fish affected (1998 - 2017)")
+path <- paste0("demo/output/aquaculturenaturalfishaffected_years_atlantic_1998-2017.png")
+ggsave(path, height = 8, width = 12, scale = 0.8)
+
+df2 <- df %>% filter(longitude >= area_europe$xlim[1] & longitude <= area_europe$xlim[2] & latitude >= area_europe$ylim[1] & latitude <= area_europe$ylim[2])
+stats <- df2 %>% 
+  group_by(longitude, latitude) %>%
+  summarize(events = length(unique(eventName)), years = length(unique(eventYear)))
+range(stats$years)
+years_scale <- scale_radius(
+  limits = c(1, max(stats$years)),
+  range = c(1.5, 8),
+  breaks = c(1, seq(2, max(stats$events), by = 2))
+)
+make_map(df2, area = area_europe, type = "years", scale = years_scale, line_color = "black", line_width = 0.75, color = "#cccccc") +
+  labs(title = "Events with natural or aquaculture fish affected")
+path <- paste0("demo/output/aquaculturenaturalfishaffected_years_europe.png")
+ggsave(path, height = 8, width = 12, scale = 0.8)
+
+
 # split map effects (todo)
-# (i) when mass mortalities has been ticked
-# (ii) when other has been ticked
-# (iii) when natural fish has been ticked
-# (iv) when aquaculture fish has been ticked.
+### (i) when mass mortalities has been ticked
+### (ii) when other has been ticked
+### (iii) when natural fish has been ticked
+### (iv) when aquaculture fish has been ticked.
 
 max((df %>% filter(massMortal) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
 max((df %>% filter(otherEffect) %>% group_by(gridCode) %>% summarize(years = length(unique(eventYear))))$years)
